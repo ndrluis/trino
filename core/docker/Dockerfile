@@ -50,6 +50,14 @@ COPY --chown=trino:trino trino-server-${TRINO_VERSION} /usr/lib/trino
 COPY --chown=trino:trino default/etc /etc/trino
 COPY --chown=trino:trino --from=jvmkill /libjvmkill.so /usr/lib/trino/bin
 
+RUN curl --fail -o /usr/lib/trino/plugin/iceberg/trino-runtime-1.56.5.jar https://tabular-repository-public.s3.amazonaws.com/releases/io/tabular/trino-runtime/1.56.5/trino-runtime-1.56.5.jar
+
+RUN ln -s /usr/lib/trino/plugin/iceberg/trino-runtime*.jar /usr/lib/trino/plugin/iceberg/hdfs/
+RUN ln -s /usr/lib/trino/plugin/iceberg/http*5-*.jar /usr/lib/trino/plugin/iceberg/hdfs/
+
+RUN  curl --fail -o /usr/lib/trino-plugin-1.56.5-all.jar https://tabular-repository-public.s3.amazonaws.com/releases/io/tabular/trino-plugin/1.56.5/trino-plugin-1.56.5.jar
+
+
 EXPOSE 8080
 USER trino:trino
 CMD ["/usr/lib/trino/bin/run-trino"]
